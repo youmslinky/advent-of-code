@@ -1,28 +1,34 @@
 use std::io::{stdin};
-use std::collections::HashSet;
+use itertools::Itertools;
+// use std::collections::HashSet;
 
 fn main() {
-    let mut sum: u64 = 0;
+    let mut completely_overlapping_sets_count = 0;
     for line in stdin().lines()
     {
-        let mut front_item_set: HashSet<char> = HashSet::new();
-        let mut back_item_set: HashSet<char> = HashSet::new();
         let line_string = line.expect("read error");
-        let line_string_length = line_string.chars().count();
-        assert!( line_string_length % 2 == 0);
-        for character in line_string[0..line_string_length/2].chars()
+        // let elf_work_order_pair: Vec<&str> = line_string.split([',','-']).collect();
+        println!("{line_string}");
+        //TODO convert strings to ints LOLOLOL
+        // let line_int:i32 = line_string.parse().expect("parse error");
+        let (elf1_lower, elf1_upper, elf2_lower, elf2_upper): (u64, u64, u64, u64) = line_string.split([',','-']).map(|s| s.parse().unwrap()).collect_tuple().unwrap();
+        if (elf1_lower <= elf2_lower) && (elf2_upper <= elf1_upper)
         {
-            front_item_set.insert(character);
+            println!("({elf1_lower} <= {elf2_lower}) && ({elf2_upper} <= {elf1_upper})");
+            completely_overlapping_sets_count += 1;
+            println!("condition 1 met");
         }
-        for character in line_string[line_string_length/2..].chars()
+        else if (elf2_lower <= elf1_lower) && (elf1_upper <= elf2_upper)
         {
-            back_item_set.insert(character);
+            println!("{elf2_lower} <= {elf1_lower} && {elf1_upper} <= {elf2_upper}");
+            completely_overlapping_sets_count += 1;
+            println!("rONDITION 2 MET");
         }
-        for error_character in front_item_set.intersection(&back_item_set)
-        {
-            sum += convert_char_to_priority(error_character) as u64;
-            println!("duplicate char found: char: {} is worth {}", error_character, convert_char_to_priority(error_character));
-        }
+        // let single_elf_work_range: Vec<&str> = elf_work_order_pair.iter().map(|s| s.split("-")).collect();
+        // dbg!(single_elf_work_range);
+        // println!("split string: {}", split);
+        println!("");
     }
-    println!("sum of priorities of items: {sum}");
+    // println!("sum of priorities of items: {sum}");
+    println!("completely overlapping sets count: {completely_overlapping_sets_count}");
 }
